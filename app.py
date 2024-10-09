@@ -43,31 +43,7 @@ if uploaded_file is not None:
     st.markdown(f"<h2 style='text-align: center;'>Prediction: {category}</h2>", unsafe_allow_html=True)
     st.markdown(f"<p style='text-align: center;'>Confidence: <b>{confidence:.2f}%</b></p>", unsafe_allow_html=True)
 
-    # Circular Confidence Meter (Gauge)
-    st.write("### Confidence Meter (Circular):")
-    fig, ax = plt.subplots(figsize=(3, 3), subplot_kw={'projection': 'polar'})
-
-    # Parameters for circular meter
-    theta = np.linspace(0, 2 * np.pi, 100)
-    values = np.linspace(0, confidence / 100 * 2 * np.pi, 100)
-
-    # Circular meter color (green for confident, red for low confidence)
-    color = 'green' if confidence > 50 else 'red'
-
-    # Plot the circular arc for the confidence
-    ax.fill_between(theta, 0, 1, color='#DDDDDD', alpha=0.3)  # Background
-    ax.fill_between(values, 0, 1, color=color, alpha=0.9)  # Confidence part
-
-    # Remove circular frame and set aesthetics
-    ax.set_yticklabels([])
-    ax.set_xticks([])
-    ax.spines['polar'].set_visible(False)
-
-    # Set title inside the circle
-    ax.text(0, 0, f"{confidence:.2f}%", ha='center', va='center', fontsize=16, color=color)
-
-    # Display the circular confidence meter
-    st.pyplot(fig)
+    
 
     # Confidence feedback
     if confidence < 50:
