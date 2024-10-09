@@ -20,18 +20,7 @@ img_width = 180   # Width defined in the model
 st.title("EcoSort AI: Waste Classification")
 st.write("Using your webcam or uploading an image, we will classify waste as either Organic or Recyclable!")
 
-import streamlit as st
-from PIL import Image
-import numpy as np
-import tensorflow as tf
-from tensorflow.keras.models import load_model
-import re
 
-# Load the trained model
-model = load_model(r"C:\path\to\your\model.keras")
-
-# Define categories
-data_cat = ['Organic', 'Recyclable']
 
 # Define a function to make predictions
 def predict_frame(image):
