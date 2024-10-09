@@ -2,7 +2,6 @@ import tensorflow as tf
 import streamlit as st
 import numpy as np
 from tensorflow.keras.models import load_model
-import matplotlib.pyplot as plt
 
 # Load the trained model
 model = load_model('model/Image_classify.keras')
@@ -35,21 +34,23 @@ if uploaded_file is not None:
     category = data_cat[np.argmax(score)]
     confidence = np.max(score) * 100
 
-    # Display the image at a smaller size and center it
-    st.markdown("<p style='text-align: left;'>Uploaded Image Preview:</p>", unsafe_allow_html=True)
-    st.image(image_load, caption='Uploaded Image', width=200, use_column_width=False)
+    # Create two columns for displaying the image and prediction
+    col1, col2 = st.columns(2)
 
-    # Show prediction results with larger text size
-    st.markdown(f"<h2 style='text-align: center;'>Prediction: {category}</h2>", unsafe_allow_html=True)
-    st.markdown(f"<p style='text-align: center;'>Confidence: <b>{confidence:.2f}%</b></p>", unsafe_allow_html=True)
+    with col1:
+        st.markdown("<p style='text-align: left;'>Uploaded Image Preview:</p>", unsafe_allow_html=True)
+        st.image(image_load, caption='Uploaded Image', width=200, use_column_width=False)
 
-    
+    with col2:
+        # Show prediction results
+        st.markdown(f"<h2 style='text-align: center;'>Prediction: {category}</h2>", unsafe_allow_html=True)
+        st.markdown(f"<p style='text-align: center;'>Confidence: <b>{confidence:.2f}%</b></p>", unsafe_allow_html=True)
 
-    # Confidence feedback
-    if confidence < 50:
-        st.warning("Confidence is low. The model is unsure about this classification.")
-    else:
-        st.success(f"The model is {confidence:.2f}% confident in this prediction.")
+        # Confidence feedback
+        if confidence < 50:
+            st.warning("Confidence is low. The model is unsure about this classification.")
+        else:
+            st.success(f"The model is {confidence:.2f}% confident in this prediction.")
 
 else:
     st.info("Please upload an image to classify.")
