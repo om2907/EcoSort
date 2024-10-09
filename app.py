@@ -36,7 +36,7 @@ if uploaded_file is not None:
     confidence = np.max(score) * 100
 
     # Display the image at a smaller size and center it
-    st.markdown("<p style='text-align: center;'>Uploaded Image Preview:</p>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: left;'>Uploaded Image Preview:</p>", unsafe_allow_html=True)
     st.image(image_load, caption='Uploaded Image', width=200, use_column_width=False)
 
     # Show prediction results with larger text size
