@@ -20,27 +20,6 @@ img_width = 180   # Width defined in the model
 st.title("EcoSort AI: Waste Classification")
 st.write("Using your webcam or uploading an image, we will classify waste as either Organic or Recyclable!")
 
-
-
-# Define a function to make predictions
-def predict_frame(image):
-    img_height, img_width = 180, 180  # Dimensions based on your model
-    image = image.resize((img_width, img_height))
-    img_arr = tf.keras.utils.img_to_array(image)
-    img_bat = tf.expand_dims(img_arr, axis=0)
-
-    # Make predictions
-    predict = model.predict(img_bat)
-    score = tf.nn.softmax(predict)
-
-    # Get prediction and confidence
-    category = data_cat[np.argmax(score)]
-    confidence = np.max(score) * 100  # Convert to percentage
-    return category, confidence
-
-
-
-
 # Start video capture
 def start_video():
     # Set up OpenCV video capture
