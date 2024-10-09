@@ -39,20 +39,26 @@ if uploaded_file is not None:
     st.markdown("<p style='text-align: center;'>Uploaded Image Preview:</p>", unsafe_allow_html=True)
     st.image(image_load, caption='Uploaded Image', width=200, use_column_width=False)
 
-    # Show prediction results
-    st.subheader(f"Prediction: {category}")
-    st.write(f"The waste in the image is predicted to be **{category}** with a confidence of **{confidence:.2f}%**.")
+    # Show prediction results with larger text size
+    st.markdown(f"<h2 style='text-align: center;'>Prediction: {category}</h2>", unsafe_allow_html=True)
+    st.markdown(f"<p style='text-align: center;'>Confidence: <b>{confidence:.2f}%</b></p>", unsafe_allow_html=True)
 
     # Confidence Meter
     st.write("### Confidence Meter:")
-    fig, ax = plt.subplots(figsize=(4, 1))  # Set a small figure size
+    fig, ax = plt.subplots(figsize=(4, 0.5))  # Slimmer and smaller meter
 
-    # Create the meter bar
-    ax.barh([0], confidence, color="green" if confidence > 50 else "red", height=0.3)
+    # Create the meter bar with custom aesthetics
+    ax.barh([0], confidence, color="green" if confidence > 50 else "red", height=0.2)
     ax.set_xlim([0, 100])
     ax.set_xticks([0, 25, 50, 75, 100])
     ax.set_yticks([])
-    ax.set_xlabel('Confidence (%)')
+    ax.set_xlabel('Confidence (%)', fontsize=8)
+
+    # Remove frame and make it cleaner
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.spines['left'].set_visible(False)
+    ax.spines['bottom'].set_color('#cccccc')
 
     # Display the meter
     st.pyplot(fig)
