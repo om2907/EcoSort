@@ -20,6 +20,64 @@ img_width = 180   # Width defined in the model
 st.title("EcoSort AI: Waste Classification")
 st.write("Using your webcam or uploading an image, we will classify waste as either Organic or Recyclable!")
 
+import streamlit as st
+from PIL import Image
+import numpy as np
+import tensorflow as tf
+from tensorflow.keras.models import load_model
+import re
+
+# Load the trained model
+model = load_model(r"C:\path\to\your\model.keras")
+
+# Define categories
+data_cat = ['Organic', 'Recyclable']
+
+# Define a function to make predictions
+def predict_frame(image):
+    img_height, img_width = 180, 180  # Dimensions based on your model
+    image = image.resize((img_width, img_height))
+    img_arr = tf.keras.utils.img_to_array(image)
+    img_bat = tf.expand_dims(img_arr, axis=0)
+
+    # Make predictions
+    predict = model.predict(img_bat)
+    score = tf.nn.softmax(predict)
+
+    # Get prediction and confidence
+    category = data_cat[np.argmax(score)]
+    confidence = np.max(score) * 100  # Convert to percentage
+    return category, confidence
+
+# Function to check if the app is opened on mobile
+def is_mobile():
+    user_agent = st.experimental_get_query_params().get("user_agent", [""])[0]
+    return bool(re.search(r"mobile|android|iphone|ipad|ipod", user_agent, re.I))
+
+# Function to upload image from mobile camera
+def mobile_upload_image():
+    uploaded_file = st.file_uploader("Take a photo or upload an image...", type=["jpeg", "jpg", "png"], label_visibility="collapsed")
+    
+    if uploaded_file is not None:
+        # Load and display the uploaded image
+        uploaded_image = Image.open(uploaded_file)
+        st.image(uploaded_image, caption='Uploaded Image', use_column_width=True)
+
+        # Make predictions on the uploaded image
+        category, confidence = predict_frame(uploaded_image)
+        st.markdown(f"<h2 style='text-align: center;'>Prediction: <strong>{category}</strong></h2>", unsafe_allow_html=True)
+        st.markdown(f"<p style='text-align: center;'>Confidence: <b>{confidence:.2f}%</b></p>", unsafe_allow_html=True)
+
+# Main logic
+if is_mobile():
+    st.title("EcoSort AI: Waste Classification (Mobile)")
+    mobile_upload_image()
+else:
+    st.title("EcoSort AI: Waste Classification (Desktop)")
+    # You can implement desktop upload functionality here
+    st.warning("This app is optimized for mobile. Please use a mobile device for full functionality.")
+
+
 # Start video capture
 def start_video():
     # Set up OpenCV video capture
