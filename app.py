@@ -2,12 +2,13 @@ import tensorflow as tf
 import streamlit as st
 import numpy as np
 from tensorflow.keras.models import load_model
+import matplotlib.pyplot as plt
 
 # Load the trained model
 model = load_model('model/Image_classify.keras')
 
 # Define categories
-data_cat = ['O', 'R']  # Assuming 'O' = Organic and 'R' = Recyclable, adjust accordingly
+data_cat = ['Organic', 'Recyclable']
 
 # Define image dimensions
 img_height = 180
@@ -30,16 +31,33 @@ if uploaded_file is not None:
     predict = model.predict(img_bat)
     score = tf.nn.softmax(predict)
 
-    # Display the image at a smaller size
-    st.image(image_load, caption='Uploaded Image', use_column_width=True)
+    # Get prediction and confidence
+    category = data_cat[np.argmax(score)]
+    confidence = np.max(score) * 100
+
+    # Display the image at a smaller size and center it
+    st.markdown("<p style='text-align: center;'>Uploaded Image Preview:</p>", unsafe_allow_html=True)
+    st.image(image_load, caption='Uploaded Image', width=200, use_column_width=False)
 
     # Show prediction results
-    category = data_cat[np.argmax(score)]  # 'O' for Organic, 'R' for Recyclable
-    confidence = np.max(score) * 100
     st.subheader(f"Prediction: {category}")
     st.write(f"The waste in the image is predicted to be **{category}** with a confidence of **{confidence:.2f}%**.")
 
-    # Feedback for confidence levels
+    # Confidence Meter
+    st.write("### Confidence Meter:")
+    fig, ax = plt.subplots(figsize=(4, 1))  # Set a small figure size
+
+    # Create the meter bar
+    ax.barh([0], confidence, color="green" if confidence > 50 else "red", height=0.3)
+    ax.set_xlim([0, 100])
+    ax.set_xticks([0, 25, 50, 75, 100])
+    ax.set_yticks([])
+    ax.set_xlabel('Confidence (%)')
+
+    # Display the meter
+    st.pyplot(fig)
+
+    # Confidence feedback
     if confidence < 50:
         st.warning("Confidence is low. The model is unsure about this classification.")
     else:
